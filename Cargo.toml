@@ -1,0 +1,8 @@
+[package]
+name = "ruende"
+version = "0.1.0"
+authors = ["Tiv0w <t.theomeyer@gmail.com>"]
+edition = "2018"
+description = "RUst ENcoder & DEcoder is a general-purpose compression system."
+
+[dependencies]
