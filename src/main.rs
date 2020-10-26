@@ -1,4 +1,4 @@
-mod rlc;
+mod rle;
 // use std::fs;
 
 fn main() {
@@ -8,8 +8,8 @@ fn main() {
     // let z = Vec::from("one#two#rrrrrrea#yessssssssssssssssssssalutttttttt");
     let input = Vec::from("WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWBWWWWWWWWWWWWWW");
 
-    let code1 = rlc::encode_with_delimiter(&input, b'#');
-    let code2 = rlc::encode(&input);
+    let code1 = rle::encode_with_delimiter(&input, b'#');
+    let code2 = rle::encode(&input);
     println!(
         "Input length: {}\nCode1 length: {}, code1: {}\nCode2 length: {}, code2: {}",
         input.len(),
