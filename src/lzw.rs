@@ -54,6 +54,7 @@ pub fn encode(data: &Vec<u8>) -> (Vec<u8>, Vec<u32>) {
                     is_code_ready = true;
                 }
 
+                dictionary.push(working_bytes_plus_current_byte);
                 working_bytes = Vec::from([value]);
             }
         }
@@ -67,7 +68,7 @@ pub fn encode(data: &Vec<u8>) -> (Vec<u8>, Vec<u32>) {
     } else {
         let (a, b, c) = utils::couple_to_triple((current_code, 0));
         result.append(&mut Vec::from([a, b, c]));
-        result32.append(&mut Vec::from([current_code, 0]));
+        result32.append(&mut Vec::from([current_code]));
     }
 
     (result, result32)
