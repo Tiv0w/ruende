@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::collections::HashMap;
 
 mod utils {
     pub fn u16_to_couple_of_u8(num: u16) -> (u8, u8) {
@@ -10,17 +10,17 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let mut result: Vec<u8> = Vec::new();
     let mut number_of_dictionary_flushes = 0;
 
-    let mut initial_dictionary: Vec<Vec<u8>> = Vec::new();
+    let mut initial_dictionary: HashMap<Vec<u8>, u16> = HashMap::default();
     for ascii_symbol in 0..=255 {
-        let ascii_symbol: Vec<u8> = vec![ascii_symbol];
-        initial_dictionary.push(ascii_symbol);
+        initial_dictionary.insert(vec![ascii_symbol], ascii_symbol as u16);
     }
-    let mut dictionary: Vec<Vec<u8>> = initial_dictionary.clone();
+    let mut dictionary: HashMap<Vec<u8>, u16> = initial_dictionary.clone();
+    let mut dictionary_len: u16 = 256;
 
     let mut working_bytes: Vec<u8> = Vec::new();
 
     for &value in data {
-        if dictionary.len() as u16 == (2u32.pow(16) - 1) as u16 {
+        if dictionary_len as u32 == (2u32.pow(16) - 1) {
             println!("- Dictionary flush");
             number_of_dictionary_flushes += 1;
             dictionary = initial_dictionary.clone();
@@ -44,7 +44,8 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
                 result.push(a);
                 result.push(b);
 
-                dictionary.push(working_bytes_plus_current_byte);
+                dictionary.insert(working_bytes_plus_current_byte, dictionary_len);
+                dictionary_len += 1;
                 working_bytes = Vec::from([value]);
             }
         }
@@ -63,11 +64,13 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     result
 }
 
-fn get_vec_code_from_dictionary(vec: &Vec<u8>, dictionary: &Vec<Vec<u8>>) -> Result<u16, ()> {
-    for (i, code) in dictionary.iter().enumerate() {
-        if vec.cmp(code) == Ordering::Equal {
-            return Ok(i as u16);
-        }
+fn get_vec_code_from_dictionary(
+    vec: &Vec<u8>,
+    dictionary: &HashMap<Vec<u8>, u16>,
+) -> Result<u16, ()> {
+    if !dictionary.contains_key(vec) {
+        return Err(());
     }
-    Err(())
+
+    Ok(*dictionary.get(vec).unwrap())
 }
