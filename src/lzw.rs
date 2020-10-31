@@ -1,10 +1,6 @@
 use crate::utils;
 use std::cmp::Ordering;
 
-pub fn hello() -> u8 {
-    3
-}
-
 pub fn encode(data: &Vec<u8>) -> (Vec<u8>, Vec<u32>) {
     let mut result32: Vec<u32> = Vec::new();
     let mut result: Vec<u8> = Vec::new();
