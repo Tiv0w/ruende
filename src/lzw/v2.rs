@@ -20,7 +20,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let mut working_bytes: Vec<u8> = Vec::new();
 
     for &value in data {
-        if dictionary_len as u32 == (2u32.pow(16) - 1) {
+        if dictionary_len == (2u32.pow(16) - 1) as u16 {
             println!("- Dictionary flush");
             number_of_dictionary_flushes += 1;
             dictionary = initial_dictionary.clone();
@@ -29,16 +29,14 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
         let mut working_bytes_plus_current_byte = working_bytes.clone();
         working_bytes_plus_current_byte.push(value);
 
-        let code: Result<u16, _> =
-            get_vec_code_from_dictionary(&working_bytes_plus_current_byte, &dictionary);
+        let code: Result<u16, _> = get_code_from_vec(&working_bytes_plus_current_byte, &dictionary);
 
         match code {
             Ok(_) => {
                 working_bytes = working_bytes_plus_current_byte;
             }
             Err(_) => {
-                let current_code: u16 =
-                    get_vec_code_from_dictionary(&working_bytes, &dictionary).unwrap();
+                let current_code: u16 = get_code_from_vec(&working_bytes, &dictionary).unwrap();
 
                 let (a, b) = utils::u16_to_couple_of_u8(current_code);
                 result.push(a);
@@ -51,7 +49,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
         }
     }
 
-    let current_code = get_vec_code_from_dictionary(&working_bytes, &dictionary).unwrap();
+    let current_code = get_code_from_vec(&working_bytes, &dictionary).unwrap();
     let (a, b) = utils::u16_to_couple_of_u8(current_code);
     result.push(a);
     result.push(b);
@@ -64,10 +62,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     result
 }
 
-fn get_vec_code_from_dictionary(
-    vec: &Vec<u8>,
-    dictionary: &HashMap<Vec<u8>, u16>,
-) -> Result<u16, ()> {
+fn get_code_from_vec(vec: &Vec<u8>, dictionary: &HashMap<Vec<u8>, u16>) -> Result<u16, ()> {
     if !dictionary.contains_key(vec) {
         return Err(());
     }
