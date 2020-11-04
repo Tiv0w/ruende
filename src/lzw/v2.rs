@@ -105,6 +105,7 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
             println!("- Dictionary flushed");
             dictionary_vec = initial_dictionary_vec.clone();
             dictionary_idx = initial_dictionary_idx.clone();
+            dictionary_len = 0x100;
         }
 
         if !reserved_byte_ready {
