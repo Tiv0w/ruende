@@ -27,6 +27,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
             println!("- Dictionary flush");
             number_of_dictionary_flushes += 1;
             dictionary = initial_dictionary.clone();
+            dictionary_len = 0x100;
         }
 
         let mut working_bytes_plus_current_byte = working_bytes.clone();
