@@ -6,3 +6,4 @@ edition = "2018"
 description = "RUst ENcoder & DEcoder is a general-purpose compression system."
 
 [dependencies]
+clap = "2.33.3"
