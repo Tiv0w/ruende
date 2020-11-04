@@ -1,42 +1,67 @@
-mod utils;
+#![allow(dead_code)]
+extern crate clap;
+use clap::{App, Arg};
+use std::fs;
 
 mod lzw;
 mod rle;
-use std::env;
-use std::fs;
+mod utils;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        println!("Usage: ruende FILE DEST");
+    let matches = App::new("RUENDE")
+        .version("0.1.0")
+        .author("Tiv0w <t.theomeyer@gmail.com>")
+        .about("RUst ENcoder & DEcoder is a general-purpose compression system.")
+        .arg(
+            Arg::with_name("decode")
+                .short("d")
+                .long("decode")
+                .help("Tells RUENDE to decode INPUT"),
+        )
+        .arg(
+            Arg::with_name("SRC")
+                .help("Sets the source file")
+                .required(true)
+                .index(1),
+        )
+        .arg(
+            Arg::with_name("DEST")
+                .help("Sets the destination file")
+                .required(true)
+                .index(2),
+        )
+        .arg(
+            Arg::with_name("rle")
+                .short("r")
+                .long("rle")
+                .help("Tells RUENDE to use RLE"),
+        )
+        .get_matches();
+
+    let arg_src = matches
+        .value_of("SRC")
+        .expect("SRC argument cannot be read");
+    let arg_dest = matches
+        .value_of("DEST")
+        .expect("DEST argument cannot be read");
+    let arg_decode = matches.is_present("decode");
+
+    if matches.args.len() < 2 {
+        println!("{}", matches.usage());
         std::process::exit(64);
     }
 
-    println!("Text: {}", &args[1]);
+    let file = fs::read(arg_src).expect("Couldn't read the file.");
 
-    let file = fs::read(&args[1]).expect("Couldn't read the file.");
+    if !arg_decode {
+        let code = lzw::v2::encode(&file);
 
-    let code = lzw::v2::encode(&file);
+        utils::compression::print_compression_ratio(file.len(), code.len());
 
-    let compression_ratio = code.len() as f32 / file.len() as f32;
-
-    println!(
-        "
-Text length      : {}
-Code length      : {}
-% of the original: {:.1}% ({})
-Compression ratio: {:.1}% ({})
-Space saved      : {:.1}% ({})
-",
-        file.len(),
-        code.len(),
-        compression_ratio * 100 as f32,
-        compression_ratio,
-        100 as f32 / compression_ratio,
-        1 as f32 / compression_ratio,
-        (1 as f32 - compression_ratio) * 100 as f32,
-        1 as f32 - compression_ratio
-    );
-
-    fs::write(&args[2], code).expect("Couldn't write to DEST");
+        fs::write(arg_dest, code).expect("Couldn't write to DEST");
+    } else {
+        // let _decode = lzw::v2::decode(&code);
+        let decode = lzw::v2::decode(&file);
+        fs::write(arg_dest, decode).expect("Couldn't write to DEST");
+    }
 }
