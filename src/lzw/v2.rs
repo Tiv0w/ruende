@@ -14,17 +14,17 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let mut number_of_dictionary_flushes = 0;
 
     let mut initial_dictionary: HashMap<Vec<u8>, u16> = HashMap::default();
-    for ascii_symbol in 0..=255 {
+    for ascii_symbol in 0..=0xff {
         initial_dictionary.insert(vec![ascii_symbol], ascii_symbol as u16);
     }
     let mut dictionary: HashMap<Vec<u8>, u16> = initial_dictionary.clone();
-    let mut dictionary_len: u16 = 256;
+    let mut dictionary_len: u16 = 0x100;
 
     let mut working_bytes: Vec<u8> = Vec::new();
 
     for &value in data {
-        if dictionary_len == (2u32.pow(16) - 1) as u16 {
-            println!("- Dictionary flush");
+        if dictionary_len == 0xffff {
+            println!("- Dictionary flushed");
             number_of_dictionary_flushes += 1;
             dictionary = initial_dictionary.clone();
             dictionary_len = 0x100;
@@ -87,13 +87,13 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
 
     let mut initial_dictionary_vec: HashMap<Vec<u8>, u16> = HashMap::default();
     let mut initial_dictionary_idx: HashMap<u16, Vec<u8>> = HashMap::default();
-    for ascii_symbol in 0..=255 {
+    for ascii_symbol in 0..=0xff {
         initial_dictionary_vec.insert(vec![ascii_symbol], ascii_symbol as u16);
         initial_dictionary_idx.insert(ascii_symbol as u16, vec![ascii_symbol]);
     }
     let mut dictionary_vec: HashMap<Vec<u8>, u16> = initial_dictionary_vec.clone();
     let mut dictionary_idx: HashMap<u16, Vec<u8>> = initial_dictionary_idx.clone();
-    let mut dictionary_len: u16 = 256;
+    let mut dictionary_len: u16 = 0x100;
 
     let mut working_bytes: Vec<u8> = Vec::new();
 
@@ -101,8 +101,8 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
     let mut reserved_byte: u8 = 0;
 
     for &byte in data {
-        if dictionary_len == (2u32.pow(16) - 1) as u16 {
-            println!("- Dictionary flush");
+        if dictionary_len == 0xffff {
+            println!("- Dictionary flushed");
             dictionary_vec = initial_dictionary_vec.clone();
             dictionary_idx = initial_dictionary_idx.clone();
         }
