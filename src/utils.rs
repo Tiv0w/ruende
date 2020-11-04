@@ -49,3 +49,27 @@ mod couples_and_triples {
         (first_word, second_word)
     }
 }
+
+pub mod compression {
+    pub fn print_compression_ratio(input_len: usize, code_len: usize) {
+        let compression_ratio = code_len as f32 / input_len as f32;
+
+        println!(
+            "
+Input length     : {}
+Code length      : {}
+% of the original: {:.1}% ({})
+Compression ratio: {:.1}% ({})
+Space saved      : {:.1}% ({})
+",
+            input_len,
+            code_len,
+            compression_ratio * 100 as f32,
+            compression_ratio,
+            100 as f32 / compression_ratio,
+            1 as f32 / compression_ratio,
+            (1 as f32 - compression_ratio) * 100 as f32,
+            1 as f32 - compression_ratio
+        );
+    }
+}
