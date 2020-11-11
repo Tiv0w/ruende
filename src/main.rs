@@ -37,6 +37,13 @@ fn main() {
                 .help("Prints compression ratio information"),
         )
         .arg(
+            Arg::with_name("algorithm")
+                .short("a")
+                .long("algorithm")
+                .help("Tells RUENDE which version of the algorithm to use")
+                .takes_value(true),
+        )
+        .arg(
             Arg::with_name("rle")
                 .short("r")
                 .long("rle")
@@ -57,6 +64,11 @@ fn main() {
         .expect("DEST argument cannot be read");
     let arg_decode = matches.is_present("decode");
     let arg_info = matches.is_present("info");
+    let arg_algo: u8 = matches
+        .value_of("algorithm")
+        .unwrap_or("2")
+        .parse()
+        .unwrap();
 
     let file = fs::read(arg_src).expect("Couldn't read the file.");
 
@@ -68,7 +80,12 @@ fn main() {
         fs::write(arg_dest, code).expect("Couldn't write to DEST");
     } else {
         // let _decode = lzw::v2::decode(&code);
-        let decode = lzw::v2::decode(&file);
-        fs::write(arg_dest, decode).expect("Couldn't write to DEST");
+        if arg_algo == 3 {
+            let decode = lzw::v3::decode(&file);
+            fs::write(arg_dest, decode).expect("Couldn't write to DEST");
+        } else {
+            let decode = lzw::v2::decode(&file);
+            fs::write(arg_dest, decode).expect("Couldn't write to DEST");
+        }
     }
 }
