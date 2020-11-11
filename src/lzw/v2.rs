@@ -11,7 +11,6 @@ mod utils {
 
 pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let mut result: Vec<u8> = Vec::new();
-    let mut number_of_dictionary_flushes = 0;
 
     let mut initial_dictionary: HashMap<Vec<u8>, u16> = HashMap::default();
     for ascii_symbol in 0..=0xff {
@@ -24,8 +23,6 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
 
     for &value in data {
         if dictionary_len == 0xffff {
-            println!("- Dictionary flushed");
-            number_of_dictionary_flushes += 1;
             dictionary = initial_dictionary.clone();
             dictionary_len = 0x100;
         }
@@ -57,11 +54,6 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let (a, b) = utils::u16_to_couple_of_u8(current_code);
     result.push(a);
     result.push(b);
-
-    println!(
-        "Number of dictionary flushes: {}",
-        number_of_dictionary_flushes
-    );
 
     result
 }

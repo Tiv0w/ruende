@@ -25,7 +25,6 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
 
     for &byte in &data[2..] {
         if dictionary_len == 0xffff {
-            println!("- Dictionary flushed");
             dictionary_idx = initial_dictionary_idx.clone();
             dictionary_len = 0x0100;
         }
