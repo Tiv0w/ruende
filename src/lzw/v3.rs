@@ -11,11 +11,11 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
     let mut result: Vec<u8> = Vec::new();
 
     let mut initial_dictionary_idx: Vec<Vec<u8>> = Vec::new();
-    for ascii_symbol in 0..=0xff {
-        initial_dictionary_idx.push(vec![ascii_symbol]);
+    let mut dictionary_len: u16 = 0x0100;
+    for ascii_symbol in 0..dictionary_len {
+        initial_dictionary_idx.push(vec![ascii_symbol as u8]);
     }
     let mut dictionary_idx: Vec<Vec<u8>> = initial_dictionary_idx.clone();
-    let mut dictionary_len: u16 = 0x100;
 
     let mut reserved_byte_ready = false;
     let mut reserved_byte: u8 = 0;
@@ -27,7 +27,7 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
         if dictionary_len == 0xffff {
             println!("- Dictionary flushed");
             dictionary_idx = initial_dictionary_idx.clone();
-            dictionary_len = 0x100;
+            dictionary_len = 0x0100;
         }
 
         if !reserved_byte_ready {
