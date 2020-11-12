@@ -12,50 +12,41 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
     }
     let mut dictionary_idx: Vec<Vec<u8>> = initial_dictionary_idx.clone();
 
-    let mut reserved_byte_ready = false;
-    let mut reserved_byte: u8 = 0;
-
-    let mut old_code = couple_of_u8_to_u16((data[0], data[1]));
+    let mut old_code: u16 = couple_of_u8_to_u16((data[0], data[1]));
     result.push(old_code as u8);
 
-    for &byte in &data[2..] {
+    let mut data = data[2..].into_iter();
+    loop {
         if dictionary_len == 0xffff {
             dictionary_idx = initial_dictionary_idx.clone();
             dictionary_len = 0x0100;
         }
 
-        if !reserved_byte_ready {
-            reserved_byte = byte;
-            reserved_byte_ready = true;
-        } else {
-            let current_code = couple_of_u8_to_u16((reserved_byte, byte));
-            let mut old_vec: Vec<u8> = dictionary_idx[old_code as usize].clone();
+        match (data.next(), data.next()) {
+            (Some(&first_byte), Some(&second_byte)) => {
+                let current_code: u16 = couple_of_u8_to_u16((first_byte, second_byte));
+                let mut old_vec: Vec<u8> = dictionary_idx[old_code as usize].clone();
 
-            if current_code < dictionary_len {
-                let vec: &Vec<u8> = &dictionary_idx[current_code as usize];
-                let vec_first_byte: u8 = vec[0];
-
-                for &byte in vec {
-                    result.push(byte);
+                if current_code < dictionary_len {
+                    let vec: &Vec<u8> = &dictionary_idx[current_code as usize];
+                    old_vec.push(vec[0]);
+                    for &byte in vec {
+                        result.push(byte);
+                    }
+                    dictionary_idx.push(old_vec);
+                    dictionary_len += 1;
+                } else {
+                    old_vec.push(old_vec[0]);
+                    for &byte in &old_vec {
+                        result.push(byte);
+                    }
+                    dictionary_idx.push(old_vec);
+                    dictionary_len += 1;
                 }
 
-                old_vec.push(vec_first_byte);
-                dictionary_idx.push(old_vec);
-                dictionary_len += 1;
-            } else {
-                let old_first_byte: u8 = old_vec[0];
-                old_vec.push(old_first_byte);
-
-                for &byte in &old_vec {
-                    result.push(byte);
-                }
-
-                dictionary_idx.push(old_vec);
-                dictionary_len += 1;
+                old_code = current_code;
             }
-
-            old_code = current_code;
-            reserved_byte_ready = false;
+            (_, _) => break,
         }
     }
 
