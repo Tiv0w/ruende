@@ -9,7 +9,7 @@ mod utils;
 
 fn main() {
     let matches = App::new("RUENDE")
-        .version("0.1.0")
+        .version("0.1.1")
         .author("Tiv0w <t.theomeyer@gmail.com>")
         .about("RUst ENcoder & DEcoder is a general-purpose compression system.")
         .arg(
