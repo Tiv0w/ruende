@@ -1,6 +1,6 @@
 [package]
 name = "ruende"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Tiv0w <t.theomeyer@gmail.com>"]
 license = "GPL-3.0-or-later"
 edition = "2018"
