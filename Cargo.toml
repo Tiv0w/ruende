@@ -2,6 +2,7 @@
 name = "ruende"
 version = "0.1.1"
 authors = ["Tiv0w <t.theomeyer@gmail.com>"]
+license = "GPL-3.0-or-later"
 edition = "2018"
 description = "RUst ENcoder & DEcoder is a general-purpose compression system."
 
