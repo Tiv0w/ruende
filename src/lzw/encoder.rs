@@ -1,12 +1,7 @@
 use std::collections::HashMap;
 
-mod utils {
-    pub fn u16_to_couple_of_u8(num: u16) -> (u8, u8) {
-        ((num >> 8) as u8, (num & 0x00ff) as u8)
-    }
-    pub fn couple_of_u8_to_u16((a, b): (u8, u8)) -> u16 {
-        ((a as u16) << 8) | (b as u16)
-    }
+fn u16_to_couple_of_u8(num: u16) -> (u8, u8) {
+    ((num >> 8) as u8, (num & 0x00ff) as u8)
 }
 
 pub fn encode(data: &Vec<u8>) -> Vec<u8> {
@@ -39,7 +34,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
             Err(_) => {
                 let current_code: u16 = get_code_from_vec(&working_bytes, &dictionary).unwrap();
 
-                let (a, b) = utils::u16_to_couple_of_u8(current_code);
+                let (a, b) = u16_to_couple_of_u8(current_code);
                 result.push(a);
                 result.push(b);
 
@@ -51,7 +46,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     }
 
     let current_code = get_code_from_vec(&working_bytes, &dictionary).unwrap();
-    let (a, b) = utils::u16_to_couple_of_u8(current_code);
+    let (a, b) = u16_to_couple_of_u8(current_code);
     result.push(a);
     result.push(b);
 

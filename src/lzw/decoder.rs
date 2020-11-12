@@ -1,10 +1,5 @@
-mod utils {
-    pub fn u16_to_couple_of_u8(num: u16) -> (u8, u8) {
-        ((num >> 8) as u8, (num & 0x00ff) as u8)
-    }
-    pub fn couple_of_u8_to_u16((a, b): (u8, u8)) -> u16 {
-        ((a as u16) << 8) | (b as u16)
-    }
+fn couple_of_u8_to_u16((a, b): (u8, u8)) -> u16 {
+    ((a as u16) << 8) | (b as u16)
 }
 
 pub fn decode(data: &Vec<u8>) -> Vec<u8> {
@@ -20,7 +15,7 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
     let mut reserved_byte_ready = false;
     let mut reserved_byte: u8 = 0;
 
-    let mut old_code = utils::couple_of_u8_to_u16((data[0], data[1]));
+    let mut old_code = couple_of_u8_to_u16((data[0], data[1]));
     result.push(old_code as u8);
 
     for &byte in &data[2..] {
@@ -33,7 +28,7 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
             reserved_byte = byte;
             reserved_byte_ready = true;
         } else {
-            let current_code = utils::couple_of_u8_to_u16((reserved_byte, byte));
+            let current_code = couple_of_u8_to_u16((reserved_byte, byte));
             let mut old_vec: Vec<u8> = dictionary_idx[old_code as usize].clone();
 
             if current_code < dictionary_len {
@@ -63,8 +58,6 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
             reserved_byte_ready = false;
         }
     }
-
-    // println!("RESULT: {}", String::from_utf8(result.clone()).unwrap());
 
     result
 }
