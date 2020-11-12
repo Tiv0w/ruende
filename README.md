@@ -44,5 +44,7 @@ Profit
 
 ## License
 Obligatory legal chit-chat.
+
 This software is licensed under the terms of the GNU GPLv3 license.
+
 Please refer to the [COPYING](./COPYING) file for the full license.
