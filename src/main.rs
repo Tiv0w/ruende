@@ -64,7 +64,7 @@ fn main() {
         .expect("DEST argument cannot be read");
     let arg_decode = matches.is_present("decode");
     let arg_info = matches.is_present("info");
-    let arg_algo: u8 = matches
+    let _arg_algo: u8 = matches
         .value_of("algorithm")
         .unwrap_or("2")
         .parse()
@@ -79,13 +79,7 @@ fn main() {
         }
         fs::write(arg_dest, code).expect("Couldn't write to DEST");
     } else {
-        // let _decode = lzw::v2::decode(&code);
-        if arg_algo == 3 {
-            let decode = lzw::v3::decode(&file);
-            fs::write(arg_dest, decode).expect("Couldn't write to DEST");
-        } else {
-            let decode = lzw::v2::decode(&file);
-            fs::write(arg_dest, decode).expect("Couldn't write to DEST");
-        }
+        let decode = lzw::v3::decode(&file);
+        fs::write(arg_dest, decode).expect("Couldn't write to DEST");
     }
 }
