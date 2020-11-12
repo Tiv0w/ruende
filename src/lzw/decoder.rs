@@ -16,38 +16,34 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
     result.push(old_code as u8);
 
     let mut data = data[2..].into_iter();
-    loop {
+
+    while let (Some(&first_byte), Some(&second_byte)) = (data.next(), data.next()) {
         if dictionary_len == 0xffff {
             dictionary = initial_dictionary.clone();
             dictionary_len = 0x0100;
         }
 
-        match (data.next(), data.next()) {
-            (Some(&first_byte), Some(&second_byte)) => {
-                let current_code: u16 = couple_of_u8_to_u16((first_byte, second_byte));
-                let mut old_vec: Vec<u8> = dictionary[old_code as usize].clone();
+        let current_code: u16 = couple_of_u8_to_u16((first_byte, second_byte));
+        let mut old_vec: Vec<u8> = dictionary[old_code as usize].clone();
 
-                if current_code < dictionary_len {
-                    let vec: &Vec<u8> = &dictionary[current_code as usize];
-                    old_vec.push(vec[0]);
-                    for &byte in vec {
-                        result.push(byte);
-                    }
-                    dictionary.push(old_vec);
-                    dictionary_len += 1;
-                } else {
-                    old_vec.push(old_vec[0]);
-                    for &byte in &old_vec {
-                        result.push(byte);
-                    }
-                    dictionary.push(old_vec);
-                    dictionary_len += 1;
-                }
-
-                old_code = current_code;
+        if current_code < dictionary_len {
+            let vec: &Vec<u8> = &dictionary[current_code as usize];
+            old_vec.push(vec[0]);
+            for &byte in vec {
+                result.push(byte);
             }
-            (_, _) => break,
+            dictionary.push(old_vec);
+            dictionary_len += 1;
+        } else {
+            old_vec.push(old_vec[0]);
+            for &byte in &old_vec {
+                result.push(byte);
+            }
+            dictionary.push(old_vec);
+            dictionary_len += 1;
         }
+
+        old_code = current_code;
     }
 
     result
