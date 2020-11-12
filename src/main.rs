@@ -73,13 +73,13 @@ fn main() {
     let file = fs::read(arg_src).expect("Couldn't read the file.");
 
     if !arg_decode {
-        let code = lzw::v2::encode(&file);
+        let code = lzw::encoder::encode(&file);
         if arg_info {
             utils::compression::print_compression_ratio(file.len(), code.len());
         }
         fs::write(arg_dest, code).expect("Couldn't write to DEST");
     } else {
-        let decode = lzw::v3::decode(&file);
+        let decode = lzw::decoder::decode(&file);
         fs::write(arg_dest, decode).expect("Couldn't write to DEST");
     }
 }
