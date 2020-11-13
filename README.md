@@ -10,7 +10,7 @@
 It uses the LZW algorithm and a block-size of 2 bytes.
 
 So if you give it a file without any potential to use the dictionary, you compress data by a whopping -100% amount!!!
-<small>(It may sound incredible, but you effectively double the size of your input. Not bad for a first time, Billy!)</small>
+*(It may sound incredible, but you effectively double the size of your input. Not bad for a first time, Billy!)*
 
 ## Usage
 
