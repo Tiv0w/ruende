@@ -4,8 +4,13 @@
 
 **ruende** is a general-purpose compression system.
 
+
+## How it works
+
 It uses the LZW algorithm and a block-size of 2 bytes.
-So if you give it a file without any potential to use the dictionary, you compress data by a whopping -100% amount!!! (It may sound incredible, but you effectively double the size of your input. Not bad for a first time, Billy!)
+
+So if you give it a file without any potential to use the dictionary, you compress data by a whopping -100% amount!!!
+<small>(It may sound incredible, but you effectively double the size of your input. Not bad for a first time, Billy!)</small>
 
 ## Usage
 
@@ -32,8 +37,9 @@ $ ruende --help
 
 Phase 1.
 ```sh
-$ echo "At this point you should really know how to clone a Git project. Otherwise, learn it, you won't regret it."
-$ cargo build # you can add --release if you don't want to be as slow as a snail
+$ echo "At this point you should really know how to clone a Git project. \
+Otherwise, learn it, you won't regret it."
+$ cargo build --release
 ```
 
 Phase 2.
@@ -42,8 +48,17 @@ Phase 2.
 Phase 3.
 Profit
 
-## License
+## Legal thingies
 Obligatory legal chit-chat.
+
+### Warranty
+I like my softwares like I like my girls, insecure and full of vulnerabilities.
+
+So this software comes with NO WARRANTY.
+
+Read in details the terms of the license in the [COPYING](./COPYING) file.
+
+### License
 
 This software is licensed under the terms of the GNU GPLv3 license.
 
