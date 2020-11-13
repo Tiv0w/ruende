@@ -51,3 +51,14 @@ pub fn decode(data: &Vec<u8>) -> Vec<u8> {
 
     result
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn couple_of_u8_to_u16() {
+        assert_eq!(0x20, super::couple_of_u8_to_u16((0, 0x20)));
+        assert_ne!(0x20, super::couple_of_u8_to_u16((0, 0x1f)));
+        assert_eq!(0x100, super::couple_of_u8_to_u16((0x1, 0)));
+        assert_ne!(0x100, super::couple_of_u8_to_u16((0x1, 0x1)));
+    }
+}

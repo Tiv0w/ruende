@@ -63,3 +63,14 @@ fn get_code_from_vec(vec: &Vec<u8>, dictionary: &HashMap<Vec<u8>, u16>) -> Resul
 
     Ok(*dictionary.get(vec).unwrap())
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn u16_to_couple_of_u8() {
+        assert_eq!((0, 0x20), super::u16_to_couple_of_u8(0x20));
+        assert_ne!((0, 0x1f), super::u16_to_couple_of_u8(0x20));
+        assert_eq!((0x1, 0), super::u16_to_couple_of_u8(0x100));
+        assert_ne!((0x1, 0x1), super::u16_to_couple_of_u8(0x100));
+    }
+}
