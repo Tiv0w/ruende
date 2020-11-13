@@ -4,19 +4,22 @@ fn u16_to_couple_of_u8(num: u16) -> (u8, u8) {
     ((num >> 8) as u8, (num & 0x00ff) as u8)
 }
 
+/// The main encoding function for LZW
 pub fn encode(data: &Vec<u8>) -> Vec<u8> {
     let mut result: Vec<u8> = Vec::new();
 
+    // Dictionary initialization
     let mut initial_dictionary: HashMap<Vec<u8>, u16> = HashMap::default();
-    for ascii_symbol in 0..=0xff {
-        initial_dictionary.insert(vec![ascii_symbol], ascii_symbol as u16);
+    let mut dictionary_len: u16 = 0x100;
+    for ascii_symbol in 0..dictionary_len {
+        initial_dictionary.insert(vec![ascii_symbol as u8], ascii_symbol);
     }
     let mut dictionary: HashMap<Vec<u8>, u16> = initial_dictionary.clone();
-    let mut dictionary_len: u16 = 0x100;
 
     let mut working_bytes: Vec<u8> = Vec::new();
 
     for &value in data {
+        // Reset the dictionary to the default one if full
         if dictionary_len == 0xffff {
             dictionary = initial_dictionary.clone();
             dictionary_len = 0x100;
@@ -40,7 +43,7 @@ pub fn encode(data: &Vec<u8>) -> Vec<u8> {
 
                 dictionary.insert(working_bytes_plus_current_byte, dictionary_len);
                 dictionary_len += 1;
-                working_bytes = Vec::from([value]);
+                working_bytes = vec![value];
             }
         }
     }
